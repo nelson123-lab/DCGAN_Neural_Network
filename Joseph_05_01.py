@@ -123,6 +123,44 @@ def build_discriminator():
 
 #     return model
 
+def build_generator():
+    """
+    The generator model takes a 100-dimensional noise vector as input and outputs a generated
+    image with a shape of (28, 28, 1).
+
+    Model Architecture:
+    1. Dense layer with 7 * 7 * 8 (392) neurons and no bias, input shape of (100,).
+    2. Batch normalization layer, default params
+    3. LeakyReLU activation function with default params
+    4. Reshape layer to convert the 1D array into a 3D feature map with a shape of (7, 7, 8).
+    5. Conv2DTranspose (deconvolution) layer with 8 filters, kernel size of (5, 5), strides of (1, 1)
+    6. Batch normalization layer.
+    7. LeakyReLU activation function with default params
+    8. Conv2DTranspose (deconvolution) layer with 16 filters, kernel size of (5, 5), strides of (2, 2)
+    9. Batch normalization layer.
+    10. LeakyReLU activation function with default params
+    11. Conv2DTranspose (deconvolution) layer with 1 filter, kernel size of (5, 5), strides of (2, 2), with tanh activation included
+
+    Note: For all Conv2DTranspose, use padding='same' and use_bias=False.
+
+    Returns:
+        model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the generator.
+    """
+    model = tf.keras.models.Sequential()
+    model.add(tf.keras.layers.Dense(units=7*7*8, input_shape=(100,), use_bias=False))
+    model.add(tf.keras.layers.BatchNormalization())
+    model.add(tf.keras.layers.LeakyReLU())
+    model.add(tf.keras.layers.Reshape(target_shape=(7, 7, 8)))
+    model.add(tf.keras.layers.Conv2DTranspose(filters=8, kernel_size=(5, 5), strides=(1, 1), padding='same', use_bias=False))
+    model.add(tf.keras.layers.BatchNormalization())
+    model.add(tf.keras.layers.LeakyReLU())
+    model.add(tf.keras.layers.Conv2DTranspose(filters=16, kernel_size=(5, 5), strides=(2, 2), padding='same', use_bias=False))
+    model.add(tf.keras.layers.BatchNormalization())
+    model.add(tf.keras.layers.LeakyReLU())
+    model.add(tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=(5, 5), strides=(2, 2), padding='same', activation='tanh', use_bias=False))
+    return model
+    
+
 class DCGAN(tf.keras.Model):
     def __init__(self, discriminator, generator):
         super(DCGAN, self).__init__()
