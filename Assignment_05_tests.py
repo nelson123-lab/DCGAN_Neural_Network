@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from solution import build_generator, build_discriminator, DCGAN
+from Joseph_05_01 import build_generator, build_discriminator, DCGAN
 
 def test_generator():
     tf.keras.utils.set_random_seed(5368)
