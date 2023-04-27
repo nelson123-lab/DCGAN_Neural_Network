@@ -207,7 +207,7 @@ class DCGAN(tf.keras.Model):
         batch_size = tf.shape(data)[0]
 
         # Train the discriminator
-        noise = tf.random.uniform(shape=(batch_size, 100), minval=-1, maxval=1)
+        noise = tf.random.uniform(shape=(batch_size, 100))
         fake_images = self.generator(noise)
         combined_images = tf.concat([data, fake_images], axis=0)
         labels = tf.concat([tf.ones((batch_size, 1)), tf.zeros((batch_size, 1))], axis=0)
@@ -220,7 +220,7 @@ class DCGAN(tf.keras.Model):
         self.d_optimizer.apply_gradients(zip(grads, self.discriminator.trainable_weights))
 
         # Train the generator
-        noise = tf.random.uniform(shape=(batch_size, 100), minval=-1, maxval=1)
+        # noise = tf.random.uniform(shape=(batch_size, 100))
         labels = tf.ones((batch_size, 1))
 
         with tf.GradientTape() as tape:
