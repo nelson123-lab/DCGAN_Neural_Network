@@ -44,29 +44,6 @@ class GenerateSamplesCallback(tf.keras.callbacks.Callback):
         # close the plot to free up memory
         plt.close()
 
-# def build_discriminator():
-#     """
-#     The discriminator model takes an image input with a shape of (28, 28, 1) and outputs a single
-#     value that indicates the probability of the input image being real or fake.
-
-#     Model Architecture:
-#     1. Conv2D layer with 16 filters, kernel size of (5, 5), strides of (2, 2), and padding set to 'same'.
-#     2. LeakyReLU activation function (default parameters)
-#     3. Dropout layer with a rate of 0.3.
-#     4. Conv2D layer with 32 filters, kernel size of (5, 5), strides of (2, 2), and padding set to 'same'.
-#     5. LeakyReLU activation function (default parameters)
-#     6. Dropout layer with a rate of 0.3.
-#     7. Flatten layer to convert the feature maps into a 1D array.
-#     8. Dense layer with 1 output neuron.
-
-# Returns:
-#     model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the discriminator.
-#     :return:
-#     """
-#     model = tf.keras.models.Sequential()
-#     # your code here
-
-#     return model
 def build_discriminator():
     """
     The discriminator model takes an image input with a shape of (28, 28, 1) and outputs a single
