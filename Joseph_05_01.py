@@ -148,11 +148,12 @@ class DCGAN(tf.keras.Model):
         self.loss_fn = loss_fn
 
     def train_step(self, data):
+
         batch_size = tf.shape(data)[0]
 
-        # Train the discriminator
-        noise = tf.random.uniform(shape=(batch_size, 100))
-        fake_images = self.generator(noise)
+        # Train the discriminator.
+        noise_data = tf.random.uniform(shape = (batch_size, 100))
+        fake_images = self.generator(noise_data)
         combined_images = tf.concat([data, fake_images], axis=0)
         labels = tf.concat([tf.ones((batch_size, 1)), tf.zeros((batch_size, 1))], axis=0)
 
@@ -163,16 +164,16 @@ class DCGAN(tf.keras.Model):
         grads = tape.gradient(d_loss, self.discriminator.trainable_weights)
         self.d_optimizer.apply_gradients(zip(grads, self.discriminator.trainable_weights))
 
-        # Train the generator
+        # Train the generator.
         labels = tf.ones((batch_size, 1))
 
         with tf.GradientTape() as tape:
-            fake_images = self.generator(noise)
+            fake_images = self.generator(noise_data)
             predictions = self.discriminator(fake_images)
             g_loss = self.loss_fn(labels, predictions)
 
-        grads = tape.gradient(g_loss, self.generator.trainable_weights)
-        self.g_optimizer.apply_gradients(zip(grads, self.generator.trainable_weights))
+        gradients = tape.gradient(g_loss, self.generator.trainable_weights)
+        self.g_optimizer.apply_gradients(zip(gradients, self.generator.trainable_weights))
 
         return {"d_loss": d_loss, "g_loss": g_loss}
 
