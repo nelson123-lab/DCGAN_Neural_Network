@@ -62,15 +62,18 @@ def build_discriminator():
     Returns:
     model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the discriminator.
     """
+    # Model Architecture
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=(5, 5), strides=(2, 2), padding='same', input_shape=(28, 28, 1)))
+    # Conv2D layer with 16 filters, kernel size of (5, 5), strides of (2, 2), and padding set to 'same'.
+    model.add(tf.keras.layers.Conv2D(filters = 16, kernel_size = (5, 5), strides = (2, 2), padding = 'same', input_shape = (28, 28, 1)))
+    # 
     model.add(tf.keras.layers.LeakyReLU())
-    model.add(tf.keras.layers.Dropout(rate=0.3))
-    model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=(5, 5), strides=(2, 2), padding='same'))
+    model.add(tf.keras.layers.Dropout(rate = 0.3))
+    model.add(tf.keras.layers.Conv2D(filters = 32, kernel_size = (5, 5), strides = (2, 2), padding = 'same'))
     model.add(tf.keras.layers.LeakyReLU())
-    model.add(tf.keras.layers.Dropout(rate=0.3))
+    model.add(tf.keras.layers.Dropout(rate = 0.3))
     model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dense(units=1))
+    model.add(tf.keras.layers.Dense(units = 1))
 
     return model
 
