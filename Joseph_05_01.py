@@ -107,18 +107,31 @@ def build_generator():
     Returns:
         model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the generator.
     """
+    # Model Architecture
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Dense(units=7*7*8, input_shape=(100,), use_bias=False))
+    # Dense layer with 7 * 7 * 8 (392) neurons and no bias, input shape of (100,).
+    model.add(tf.keras.layers.Dense(units = 7*7*8, input_shape = (100,), use_bias = False))
+    # Batch normalization layer, default params
     model.add(tf.keras.layers.BatchNormalization())
+    # LeakyReLU activation function with default params
     model.add(tf.keras.layers.LeakyReLU())
-    model.add(tf.keras.layers.Reshape(target_shape=(7, 7, 8)))
-    model.add(tf.keras.layers.Conv2DTranspose(filters=8, kernel_size=(5, 5), strides=(1, 1), padding='same', use_bias=False))
+    # Reshape layer to convert the 1D array into a 3D feature map with a shape of (7, 7, 8).
+    model.add(tf.keras.layers.Reshape(target_shape = (7, 7, 8)))
+    # Conv2DTranspose (deconvolution) layer with 8 filters, kernel size of (5, 5), strides of (1, 1)
+    model.add(tf.keras.layers.Conv2DTranspose(filters = 8, kernel_size = (5, 5), strides = (1, 1), padding = 'same', use_bias = False))
+    # Batch normalization layer.
     model.add(tf.keras.layers.BatchNormalization())
+    # LeakyReLU activation function with default params
     model.add(tf.keras.layers.LeakyReLU())
-    model.add(tf.keras.layers.Conv2DTranspose(filters=16, kernel_size=(5, 5), strides=(2, 2), padding='same', use_bias=False))
+    # Conv2DTranspose (deconvolution) layer with 16 filters, kernel size of (5, 5), strides of (2, 2)
+    model.add(tf.keras.layers.Conv2DTranspose(filters = 16, kernel_size = (5, 5), strides = (2, 2), padding = 'same', use_bias = False))
+    # Batch normalization layer.
     model.add(tf.keras.layers.BatchNormalization())
+    # LeakyReLU activation function with default params
     model.add(tf.keras.layers.LeakyReLU())
-    model.add(tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=(5, 5), strides=(2, 2), padding='same', activation='tanh', use_bias=False))
+    # Conv2DTranspose (deconvolution) layer with 1 filter, kernel size of (5, 5), strides of (2, 2), with tanh activation included
+    model.add(tf.keras.layers.Conv2DTranspose(filters = 1, kernel_size = (5, 5), strides = (2, 2), padding = 'same', activation = 'tanh', use_bias = False))
+    
     return model
 
 
