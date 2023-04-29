@@ -173,36 +173,6 @@ class DCGAN(tf.keras.Model):
         self.g_optimizer = g_optimizer
         self.loss_fn = loss_fn
 
-    # def train_step(self, data):
-    #     """
-    #     This method takes a batch of real images (data) and generates fake images using the generator model.
-    #     It then computes the loss for both generator and discriminator models and updates the model weights
-    #     using their respective optimizers.
-
-    #     By implementing this method, you are overriding the default train_step method of the tf.keras.Model class.
-    #     This allows us to train a GAN using model.fit()
-
-    #     You can adapt the train_step function from the tensorflow DCGAN tutorial
-    #     https://www.tensorflow.org/tutorials/generative/dcgan
-
-    #     However, You must make the following changes (IMPORTANT!):
-    #     - Instead of using a normal distribution to generate the noise vector, use a uniform distribution (default params in tensorflow)
-    #     - Instead of separately calculating the discriminator loss for real and fake images and adding them together,
-    #       combine the real and fake images into a batch, label them real and fake, and calculate the loss on the entire batch.
-    #       (This is equivalent to doing it separately as done in the tutorial, and giving each 0.5 weight), either one should pass the tests.
-
-    #     Args:
-    #         data: a batch of real images
-
-    #     Returns:
-    #         dict[str, tf.Tensor]: A dictionary containing the generator loss ('g_loss') and
-    #             discriminator loss ('d_loss') for the current training step.
-    #     """
-    #     batch_size = tf.shape(data)[0]
-    #     # TRAINING CODE START HERE
-
-    #     # TRAINING CODE END HERE
-    #     return {"d_loss": d_loss, "g_loss": g_loss}
     def train_step(self, data):
         batch_size = tf.shape(data)[0]
 
@@ -220,7 +190,6 @@ class DCGAN(tf.keras.Model):
         self.d_optimizer.apply_gradients(zip(grads, self.discriminator.trainable_weights))
 
         # Train the generator
-        # noise = tf.random.uniform(shape=(batch_size, 100))
         labels = tf.ones((batch_size, 1))
 
         with tf.GradientTape() as tape:
