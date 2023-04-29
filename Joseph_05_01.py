@@ -66,44 +66,23 @@ def build_discriminator():
     model = tf.keras.models.Sequential()
     # Conv2D layer with 16 filters, kernel size of (5, 5), strides of (2, 2), and padding set to 'same'.
     model.add(tf.keras.layers.Conv2D(filters = 16, kernel_size = (5, 5), strides = (2, 2), padding = 'same', input_shape = (28, 28, 1)))
-    # 
+    # LeakyReLU activation function (default parameters)
     model.add(tf.keras.layers.LeakyReLU())
+    # Dropout layer with a rate of 0.3.
     model.add(tf.keras.layers.Dropout(rate = 0.3))
+    # Conv2D layer with 32 filters, kernel size of (5, 5), strides of (2, 2), and padding set to 'same'.
     model.add(tf.keras.layers.Conv2D(filters = 32, kernel_size = (5, 5), strides = (2, 2), padding = 'same'))
+    # LeakyReLU activation function (default parameters)
     model.add(tf.keras.layers.LeakyReLU())
+    # Dropout layer with a rate of 0.3.
     model.add(tf.keras.layers.Dropout(rate = 0.3))
+    # Flatten layer to convert the feature maps into a 1D array.
     model.add(tf.keras.layers.Flatten())
+    # Dense layer with 1 output neuron.
     model.add(tf.keras.layers.Dense(units = 1))
 
     return model
 
-# def build_generator():
-#     """
-#     The generator model takes a 100-dimensional noise vector as input and outputs a generated
-#     image with a shape of (28, 28, 1).
-
-#     Model Architecture:
-#     1. Dense layer with 7 * 7 * 8 (392) neurons and no bias, input shape of (100,).
-#     2. Batch normalization layer, default params
-#     3. LeakyReLU activation function with default params
-#     4. Reshape layer to convert the 1D array into a 3D feature map with a shape of (7, 7, 8).
-#     5. Conv2DTranspose (deconvolution) layer with 8 filters, kernel size of (5, 5), strides of (1, 1)
-#     6. Batch normalization layer.
-#     7. LeakyReLU activation function with default params
-#     8. Conv2DTranspose (deconvolution) layer with 16 filters, kernel size of (5, 5), strides of (2, 2)
-#     9. Batch normalization layer.
-#     10. LeakyReLU activation function with default params
-#     11. Conv2DTranspose (deconvolution) layer with 1 filter, kernel size of (5, 5), strides of (2, 2), with tanh activation included
-
-#     Note: For all Conv2DTranspose, use padding='same' and use_bias=False.
-
-#     Returns:
-#         model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the generator.
-#     """
-#     model = tf.keras.models.Sequential()
-#     # your code here
-
-#     return model
 
 def build_generator():
     """
