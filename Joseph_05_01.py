@@ -105,7 +105,7 @@ def build_generator():
 
     Returns:
         model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the generator.
-    """
+    
     # Model Architecture
     model = tf.keras.models.Sequential()
     # Dense layer with 7 * 7 * 8 (392) neurons and no bias, input shape of (100,).
