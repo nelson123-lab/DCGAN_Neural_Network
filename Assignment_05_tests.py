@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from Joseph_05_01 import build_generator, build_discriminator, DCGAN
+from Kamangar_05_01 import build_generator, build_discriminator, DCGAN
 
 def test_generator():
     tf.keras.utils.set_random_seed(5368)
@@ -97,6 +97,6 @@ def test_dcgan_train_step():
 
 
     after_actual = generator(z, training=False)
-    assert np.allclose(after_target, after_actual, atol=1e-3)
-    assert abs(history.history['d_loss'][0] - 0.708788275718689) < 1e-3
-    assert abs(history.history['g_loss'][0] - 0.6812016367912292) < 1e-3
+    assert np.allclose(after_target, after_actual, atol=1e-3) # Not working
+    assert abs(history.history['d_loss'][0] - 0.708788275718689) < 1e-3 # Not working 
+    assert abs(history.history['g_loss'][0] - 0.6812016367912292) < 1e-3 # Not working
