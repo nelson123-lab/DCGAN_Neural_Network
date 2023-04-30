@@ -1,7 +1,6 @@
-# Joseph, Nelson
-# 1002_050_500
-# 2023_04_30
-# Assignment_05_01
+
+
+
 
 
 import os
@@ -24,8 +23,8 @@ def plot_images(generated_images, n_rows=1, n_cols=10):
 
 class GenerateSamplesCallback(tf.keras.callbacks.Callback):
     """
-    Callback to generate images from the generator model at the end of each epoch
-    Uses the same noise vector to generate images at each epoch, so that the images can be compared over time
+    
+    
     """
     def __init__(self, generator, noise):
         self.generator = generator
@@ -106,7 +105,7 @@ def build_generator():
 
     Returns:
         model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the generator.
-    """
+    
     # Model Architecture
     model = tf.keras.models.Sequential()
     # Dense layer with 7 * 7 * 8 (392) neurons and no bias, input shape of (100,).
