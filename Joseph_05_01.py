@@ -23,7 +23,7 @@ def plot_images(generated_images, n_rows=1, n_cols=10):
 
 class GenerateSamplesCallback(tf.keras.callbacks.Callback):
     """
-    Callback to generate images from the generator model at the end of each epoch
+    
     
     """
     def __init__(self, generator, noise):
