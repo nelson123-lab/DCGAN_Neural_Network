@@ -24,7 +24,7 @@ def plot_images(generated_images, n_rows=1, n_cols=10):
 class GenerateSamplesCallback(tf.keras.callbacks.Callback):
     """
     Callback to generate images from the generator model at the end of each epoch
-    Uses the same noise vector to generate images at each epoch, so that the images can be compared over time
+    
     """
     def __init__(self, generator, noise):
         self.generator = generator
