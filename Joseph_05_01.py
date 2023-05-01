@@ -133,19 +133,29 @@ def build_generator():
     
     return model
 
-# The DCGAN Class for training the generator and the discriminator.
+# The DCGAN Class that inherits from tf.keras.Model
 class DCGAN(tf.keras.Model):
+    # Initializing the discriminator and the generator model.
     def __init__(self, discriminator, generator):
+        # Calling the constructor of the parent class to initialize the object.
         super(DCGAN, self).__init__()
+        # setting discriminator attribute to discriminator model.
         self.discriminator = discriminator
+        # Setting generator attribute to generator model.
         self.generator = generator
 
+    # Defining the compile method for the traning the DCGAN.
     def compile(self, d_optimizer, g_optimizer, loss_fn):
+        # Calling the constructer of the parent class to initialize the object.
         super(DCGAN, self).compile()
+        # Setting d_optimizer attribute to discriminator optimizer.
         self.d_optimizer = d_optimizer
+        # Setting g_optimizer attribute to generator optimizer.
         self.g_optimizer = g_optimizer
+        # Setting loss_fn attribute to a loss function.
         self.loss_fn = loss_fn
 
+    #
     def generator_loss(self, fake_output):
         g_loss = self.loss_fn(tf.ones_like(fake_output), fake_output)
         return g_loss
