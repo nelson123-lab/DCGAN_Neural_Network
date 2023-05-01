@@ -146,39 +146,70 @@ class DCGAN(tf.keras.Model):
         self.g_optimizer = g_optimizer
         self.loss_fn = loss_fn
 
-    # The train function 
+    # # The train function 
+    # def train_step(self, data):
+    #     # Finding the batch size.
+    #     batch_size = np.shape(data)[0]
+    #     # Making a random uniform noise according to the batch size and the input shape.
+    #     Noise_data = tf.random.uniform([batch_size, 100])
+    #     # Minimizing the errors of the discriminator and the generator using the gradient tape.
+    #     with tf.GradientTape() as discriminator_tape, tf.GradientTape() as generator_tape:
+    #         # Generating fake images using the generator by giving the noise input.
+    #         fake_images = self.generator(Noise_data, training=True)
+    #         # finding the real output of the data using the discriminator.
+    #         real_output = self.discriminator(data, training = True)
+    #         # finding the fake images using the discriminater.
+    #         fk_op = self.discriminator(fake_images, training = True)
+    #         # Finding the discriminator loss
+    #         d_loss_r = self.loss_fn(tf.ones_like(real_output), real_output)
+    #         # fInding the discriminator loss using
+    #         d_loss_f = self.loss_fn(tf.zeros_like(fk_op), fk_op)
+    #         # finding the genearator loss
+    #         g_loss = self.loss_fn(tf.ones_like(fk_op), fk_op)
+    #         # finding the discriminator loss and dividing it with 2
+    #         d_loss = (d_loss_r + d_loss_f) / 2
+    #     # Finding the gradients for the discriminator
+    #     d_grad = discriminator_tape.gradient(d_loss, self.discriminator.trainable_variables)
+    #     # Finding the gradients for the generator
+    #     g_grad = generator_tape.gradient(g_loss, self.generator.trainable_variables)
+    #     # Applying the gradient for the discriminator.
+    #     self.d_optimizer.apply_gradients(zip(d_grad, self.discriminator.trainable_variables))
+    #     # Applying the gradients for the generator.
+    #     self.g_optimizer.apply_gradients(zip(g_grad, self.generator.trainable_variables))
+
+    #     return {'d_loss':d_loss, 'g_loss':g_loss}
+
     def train_step(self, data):
-        # Finding the batch size.
-        batch_size = np.shape(data)[0]
-        # Making a random uniform noise according to the batch size and the input shape.
-        Noise_data = tf.random.uniform([batch_size, 100])
-        # Minimizing the errors of the discriminator and the generator using the gradient tape.
-        with tf.GradientTape() as discriminator_tape, tf.GradientTape() as generator_tape:
-            # Generating fake images using the generator by giving the noise input.
-            fake_images = self.generator(Noise_data, training=True)
-            # finding the real output of the data using the discriminator.
-            real_output = self.discriminator(data, training = True)
-            # finding the fake images using the discriminater.
-            fk_op = self.discriminator(fake_images, training = True)
-            # Finding the discriminator loss
-            d_loss_r = self.loss_fn(tf.ones_like(real_output), real_output)
-            # fInding the discriminator loss using
-            d_loss_f = self.loss_fn(tf.zeros_like(fk_op), fk_op)
-            # finding the genearator loss
-            g_loss = self.loss_fn(tf.ones_like(fk_op), fk_op)
-            # finding the discriminator loss and dividing it with 2
-            d_loss = (d_loss_r + d_loss_f) / 2
-        # Finding the gradients for the discriminator
-        d_grad = discriminator_tape.gradient(d_loss, self.discriminator.trainable_variables)
-        # Finding the gradients for the generator
-        g_grad = generator_tape.gradient(g_loss, self.generator.trainable_variables)
-        # Applying the gradient for the discriminator.
-        self.d_optimizer.apply_gradients(zip(d_grad, self.discriminator.trainable_variables))
-        # Applying the gradients for the generator.
-        self.g_optimizer.apply_gradients(zip(g_grad, self.generator.trainable_variables))
+            
+            batch_size = tf.shape(data)[0]
+            noise = tf.random.uniform([batch_size, 100])
 
-        return {'d_loss':d_loss, 'g_loss':g_loss}
+            def generator_loss(fake_output):
+                g_loss = self.loss_fn(tf.ones_like(fake_output), fake_output)
+                return g_loss
+            
+            def discriminator_loss(real_output, fake_output):
+                real_labels = tf.ones_like(real_output)
+                fake_labels = tf.zeros_like(fake_output)
+                combined_output = tf.concat([real_output, fake_output], axis=0)
+                combined_labels = tf.concat([real_labels, fake_labels], axis=0)
+                d_loss = self.loss_fn(combined_labels, combined_output)
+                return d_loss
+        
 
+            with tf.GradientTape() as discriminator_tape, tf.GradientTape() as generator_tape:
+                fake_images = self.generator(noise, training=True)
+                real_image_output = self.discriminator(data, training=True)
+                fake_image_output = self.discriminator(fake_images, training=True)
+                g_loss = generator_loss(fake_image_output)
+                d_loss = discriminator_loss(real_image_output, fake_image_output)
+            d_grad = discriminator_tape.gradient(d_loss, self.discriminator.trainable_variables)
+            g_grad = generator_tape.gradient(g_loss, self.generator.trainable_variables)
+            self.d_optimizer.apply_gradients(zip(d_grad, self.discriminator.trainable_variables))
+            self.g_optimizer.apply_gradients(zip(g_grad, self.generator.trainable_variables))
+
+            return {'Discriminator_loss':d_loss, 'Generator_loss':g_loss}
+    
 def train_dcgan_mnist():
     tf.keras.utils.set_random_seed(5368)
     # load mnist
