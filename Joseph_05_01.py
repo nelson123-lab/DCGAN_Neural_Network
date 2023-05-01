@@ -164,6 +164,7 @@ class DCGAN(tf.keras.Model):
             d_loss_r = self.loss_fn(tf.ones_like(real_output), real_output)
             # fInding the discriminator loss using
             d_loss_f = self.loss_fn(tf.zeros_like(fk_op), fk_op)
+            # finding the genearator loss
             g_loss = self.loss_fn(tf.ones_like(fk_op), fk_op)
             d_loss = (d_loss_r + d_loss_f) / 2
         d_grad = discriminator_tape.gradient(d_loss, self.discriminator.trainable_variables)
