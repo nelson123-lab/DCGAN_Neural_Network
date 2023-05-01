@@ -1,7 +1,7 @@
-
-
-
-
+# Joseph, Nelson
+# 1002_050_500
+# 2023_05_01
+# Assignment_05_01
 
 import os
 import tensorflow as tf
@@ -22,10 +22,6 @@ def plot_images(generated_images, n_rows=1, n_cols=10):
     return f, ax
 
 class GenerateSamplesCallback(tf.keras.callbacks.Callback):
-    """
-    
-    
-    """
     def __init__(self, generator, noise):
         self.generator = generator
         self.noise = noise
