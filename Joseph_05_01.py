@@ -146,39 +146,6 @@ class DCGAN(tf.keras.Model):
         self.g_optimizer = g_optimizer
         self.loss_fn = loss_fn
 
-    # # The train function 
-    # def train_step(self, data):
-    #     # Finding the batch size.
-    #     batch_size = np.shape(data)[0]
-    #     # Making a random uniform noise according to the batch size and the input shape.
-    #     Noise_data = tf.random.uniform([batch_size, 100])
-    #     # Minimizing the errors of the discriminator and the generator using the gradient tape.
-    #     with tf.GradientTape() as discriminator_tape, tf.GradientTape() as generator_tape:
-    #         # Generating fake images using the generator by giving the noise input.
-    #         fake_images = self.generator(Noise_data, training=True)
-    #         # finding the real output of the data using the discriminator.
-    #         real_output = self.discriminator(data, training = True)
-    #         # finding the fake images using the discriminater.
-    #         fk_op = self.discriminator(fake_images, training = True)
-    #         # Finding the discriminator loss
-    #         d_loss_r = self.loss_fn(tf.ones_like(real_output), real_output)
-    #         # fInding the discriminator loss using
-    #         d_loss_f = self.loss_fn(tf.zeros_like(fk_op), fk_op)
-    #         # finding the genearator loss
-    #         g_loss = self.loss_fn(tf.ones_like(fk_op), fk_op)
-    #         # finding the discriminator loss and dividing it with 2
-    #         d_loss = (d_loss_r + d_loss_f) / 2
-    #     # Finding the gradients for the discriminator
-    #     d_grad = discriminator_tape.gradient(d_loss, self.discriminator.trainable_variables)
-    #     # Finding the gradients for the generator
-    #     g_grad = generator_tape.gradient(g_loss, self.generator.trainable_variables)
-    #     # Applying the gradient for the discriminator.
-    #     self.d_optimizer.apply_gradients(zip(d_grad, self.discriminator.trainable_variables))
-    #     # Applying the gradients for the generator.
-    #     self.g_optimizer.apply_gradients(zip(g_grad, self.generator.trainable_variables))
-
-    #     return {'d_loss':d_loss, 'g_loss':g_loss}
-
     def train_step(self, data):
             
             batch_size = tf.shape(data)[0]
