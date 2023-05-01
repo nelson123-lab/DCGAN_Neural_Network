@@ -174,6 +174,7 @@ class DCGAN(tf.keras.Model):
         g_grad = generator_tape.gradient(g_loss, self.generator.trainable_variables)
         # Applying the gradient for the discriminator.
         self.d_optimizer.apply_gradients(zip(d_grad, self.discriminator.trainable_variables))
+        # Applying the gradients for the generator.
         self.g_optimizer.apply_gradients(zip(g_grad, self.generator.trainable_variables))
 
         return {'d_loss':d_loss, 'g_loss':g_loss}
