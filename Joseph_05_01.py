@@ -156,10 +156,13 @@ class DCGAN(tf.keras.Model):
         with tf.GradientTape() as discriminator_tape, tf.GradientTape() as generator_tape:
             # Generating fake images using the generator by giving the noise input.
             fake_images = self.generator(Noise_data, training=True)
-
-            rl_op = self.discriminator(data, training=True)
-            fk_op = self.discriminator(fake_images, training=True)
-            d_loss_r = self.loss_fn(tf.ones_like(rl_op), rl_op)
+            # finding the real output of the data using the discriminator.
+            real_output = self.discriminator(data, training = True)
+            # finding the fake images using the discriminater.
+            fk_op = self.discriminator(fake_images, training = True)
+            # Finding the discriminator loss
+            d_loss_r = self.loss_fn(tf.ones_like(real_output), real_output)
+            # fInding the discriminator loss using
             d_loss_f = self.loss_fn(tf.zeros_like(fk_op), fk_op)
             g_loss = self.loss_fn(tf.ones_like(fk_op), fk_op)
             d_loss = (d_loss_r + d_loss_f) / 2
