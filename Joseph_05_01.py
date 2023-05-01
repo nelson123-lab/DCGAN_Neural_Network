@@ -150,17 +150,22 @@ class DCGAN(tf.keras.Model):
         self.g_optimizer = g_optimizer
         # Setting loss_fn attribute to a loss function.
         self.loss_fn = loss_fn
-
-    #
-    def generator_loss(self, fake_output):
-        g_loss = self.loss_fn(tf.ones_like(fake_output), fake_output)
+    
+    # Code referred from TensorFlow documentation.
+    # Generator loss function.
+    def generator_loss(self, fake_images):
+        # Creating a tensor of ones with the same shape as the fake_images.
+        fake_labels = tf.ones_like(fake_images)
+        # Finding the loss by comparing the fake labels and fake images. 
+        g_loss = self.loss_fn(fake_labels, fake_images)
+        # Returns the Generator loss of the batch of data.
         return g_loss
     
-    def discriminator_loss(self, real_output, fake_output):
-        real_labels = tf.ones_like(real_output)
-        fake_labels = tf.zeros_like(fake_output)
-        combined_output = tf.concat([real_output, fake_output], axis=0)
-        combined_labels = tf.concat([real_labels, fake_labels], axis=0)
+    # Discriminator loss function.
+    def discriminator_loss(self, real_images, fake_images):
+        real_labels, fake_labels = tf.ones_like(real_images), tf.zeros_like(fake_images)
+        combined_output = tf.concat([real_images, fake_images], axis = 0)
+        combined_labels = tf.concat([real_labels, fake_labels], axis = 0)
         d_loss = self.loss_fn(combined_labels, combined_output)
         return d_loss
 
