@@ -152,11 +152,13 @@ class DCGAN(tf.keras.Model):
         batch_size = np.shape(data)[0]
         # Making a random uniform noise according to the batch size and the input shape.
         Noise_data = tf.random.uniform([batch_size, 100])
-
+        # Minimizing the errors of the discriminator and the generator using the gradient tape.
         with tf.GradientTape() as discriminator_tape, tf.GradientTape() as generator_tape:
-            imgs = self.generator(Noise_data, training=True)
+            # Generating fake images using the generator by giving the noise input.
+            fake_images = self.generator(Noise_data, training=True)
+
             rl_op = self.discriminator(data, training=True)
-            fk_op = self.discriminator(imgs, training=True)
+            fk_op = self.discriminator(fake_images, training=True)
             d_loss_r = self.loss_fn(tf.ones_like(rl_op), rl_op)
             d_loss_f = self.loss_fn(tf.zeros_like(fk_op), fk_op)
             g_loss = self.loss_fn(tf.ones_like(fk_op), fk_op)
