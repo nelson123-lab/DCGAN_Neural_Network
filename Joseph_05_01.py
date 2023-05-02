@@ -176,18 +176,21 @@ class DCGAN(tf.keras.Model):
 
     # Training step in GAN algorithm.
     def train_step(self, data):
-            
-        batch_size = tf.shape(data)[0]
-        noise = tf.random.uniform([batch_size, 100])
+        # Calculating the input batch size of the data.
+        input_batch_size = tf.shape(data)[0]
+        # Generating uniform random noise with the shape of (input batch size , 100).
+        Noise = tf.random.uniform([input_batch_size, 100])
 
-        with tf.GradientTape() as discriminator_tape, tf.GradientTape() as generator_tape:
-            Fake_images = self.generator(noise, training=True)
+        # Creating two Gradient tapes one for discriminator and one for generater for finding the generator and discriminator gradients.
+        with tf.GradientTape() as d_tape, tf.GradientTape() as g_tape:
+
+            Fake_images = self.generator(Noise, training=True)
             real_image_output = self.discriminator(data, training=True)
             fake_image_output = self.discriminator(Fake_images, training=True)
             g_loss = self.generator_loss(fake_image_output)
             d_loss = self.discriminator_loss(real_image_output, fake_image_output)
-        d_grad = discriminator_tape.gradient(d_loss, self.discriminator.trainable_variables)
-        g_grad = generator_tape.gradient(g_loss, self.generator.trainable_variables)
+        d_grad = d_tape.gradient(d_loss, self.discriminator.trainable_variables)
+        g_grad = g_tape.gradient(g_loss, self.generator.trainable_variables)
         self.d_optimizer.apply_gradients(zip(d_grad, self.discriminator.trainable_variables))
         self.g_optimizer.apply_gradients(zip(g_grad, self.generator.trainable_variables))
 
