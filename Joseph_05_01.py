@@ -40,23 +40,6 @@ class GenerateSamplesCallback(tf.keras.callbacks.Callback):
         plt.close()
 
 def build_discriminator():
-    """
-    The discriminator model takes an image input with a shape of (28, 28, 1) and outputs a single
-    value that indicates the probability of the input image being real or fake.
-
-    Model Architecture:
-    1. Conv2D layer with 16 filters, kernel size of (5, 5), strides of (2, 2), and padding set to 'same'.
-    2. LeakyReLU activation function (default parameters)
-    3. Dropout layer with a rate of 0.3.
-    4. Conv2D layer with 32 filters, kernel size of (5, 5), strides of (2, 2), and padding set to 'same'.
-    5. LeakyReLU activation function (default parameters)
-    6. Dropout layer with a rate of 0.3.
-    7. Flatten layer to convert the feature maps into a 1D array.
-    8. Dense layer with 1 output neuron.
-
-    Returns:
-    model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the discriminator.
-    """
     # Model Architecture
     model = tf.keras.models.Sequential()
     # Conv2D layer with 16 filters, kernel size of (5, 5), strides of (2, 2), and padding set to 'same'.
@@ -80,28 +63,6 @@ def build_discriminator():
 
 
 def build_generator():
-    """
-    The generator model takes a 100-dimensional noise vector as input and outputs a generated
-    image with a shape of (28, 28, 1).
-
-    Model Architecture:
-    1. Dense layer with 7 * 7 * 8 (392) neurons and no bias, input shape of (100,).
-    2. Batch normalization layer, default params
-    3. LeakyReLU activation function with default params
-    4. Reshape layer to convert the 1D array into a 3D feature map with a shape of (7, 7, 8).
-    5. Conv2DTranspose (deconvolution) layer with 8 filters, kernel size of (5, 5), strides of (1, 1)
-    6. Batch normalization layer.
-    7. LeakyReLU activation function with default params
-    8. Conv2DTranspose (deconvolution) layer with 16 filters, kernel size of (5, 5), strides of (2, 2)
-    9. Batch normalization layer.
-    10. LeakyReLU activation function with default params
-    11. Conv2DTranspose (deconvolution) layer with 1 filter, kernel size of (5, 5), strides of (2, 2), with tanh activation included
-
-    Note: For all Conv2DTranspose, use padding='same' and use_bias=False.
-
-    Returns:
-        model (tf.keras.models.Sequential): A TensorFlow Keras Sequential model representing the generator.
-    """
     # Model Architecture
     model = tf.keras.models.Sequential()
     # Dense layer with 7 * 7 * 8 (392) neurons and no bias, input shape of (100,).
@@ -168,9 +129,9 @@ class DCGAN(tf.keras.Model):
         # Combining the real and Fake labels tensors together.
         Combined_labels = tf.concat([Real_labels, Fake_labels], axis = 0)
         # Combining the Real and Fake images into a batch for calculating the loss of the discriminator.
-        Combined_output = tf.concat([Real_images, Fake_images], axis = 0)
+        Combined_outputs = tf.concat([Real_images, Fake_images], axis = 0)
         # Finding the discriminator loss shows how well the discriminator is able to distinguish between the real and fake images.
-        d_loss_value = self.loss_fn(Combined_labels, Combined_output)
+        d_loss_value = self.loss_fn(Combined_labels, Combined_outputs)
         # Returning the discriminator loss value of the batch of data.
         return d_loss_value
 
@@ -189,15 +150,22 @@ class DCGAN(tf.keras.Model):
             Real_output = self.discriminator(data, training = True)
             # Calculates the output of discriminator model for Fake Images.
             Fake_output = self.discriminator(Fake_images, training = True)
-            
-            g_loss = self.generator_loss(Fake_output)
-            d_loss = self.discriminator_loss(Real_output, Fake_output)
-        d_grad = d_tape.gradient(d_loss, self.discriminator.trainable_variables)
-        g_grad = g_tape.gradient(g_loss, self.generator.trainable_variables)
-        self.d_optimizer.apply_gradients(zip(d_grad, self.discriminator.trainable_variables))
-        self.g_optimizer.apply_gradients(zip(g_grad, self.generator.trainable_variables))
+            # Finding the generator loss and discrimiator loss using Fake output and and combination of real and fake output respectively.
+            g_loss_value, d_loss_value = self.generator_loss(Fake_output), self.discriminator_loss(Real_output, Fake_output)
 
-        return {'d_loss':d_loss, 'g_loss':g_loss}
+        # Gradient Calculation
+        # Calculating the gradients of the generator loss with respect to the trainable variables in the generator model.
+        g_gradients = g_tape.gradient(g_loss_value, self.generator.trainable_variables)
+        # Calculating the gradients of the discriminator loss with respect to the trainable variables in the discriminator model.
+        d_gradients = d_tape.gradient(d_loss_value, self.discriminator.trainable_variables)
+
+        # Applying the gradients to the generator model.
+        self.g_optimizer.apply_gradients(zip(g_gradients, self.generator.trainable_variables))
+        # Applying the gradients to the discriminator model.
+        self.d_optimizer.apply_gradients(zip(d_gradients, self.discriminator.trainable_variables))
+
+        # Returning the Discriminator loss value and generator loss value.
+        return {'discriminator_loss':d_loss_value, 'generator_loss':g_loss_value}
     
 def train_dcgan_mnist():
     tf.keras.utils.set_random_seed(5368)
