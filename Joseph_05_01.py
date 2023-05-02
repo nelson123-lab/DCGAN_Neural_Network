@@ -1,6 +1,6 @@
 # Joseph, Nelson
 # 1002_050_500
-# 2023_05_01
+# 2023_04_30
 # Assignment_05_01
 
 import os
@@ -165,7 +165,7 @@ class DCGAN(tf.keras.Model):
         self.d_optimizer.apply_gradients(zip(d_gradients, self.discriminator.trainable_variables))
 
         # Returning the Discriminator loss value and generator loss value.
-        return {'discriminator_loss':d_loss_value, 'generator_loss':g_loss_value}
+        return {'d_loss':d_loss_value, 'g_loss':g_loss_value}
     
 def train_dcgan_mnist():
     tf.keras.utils.set_random_seed(5368)
