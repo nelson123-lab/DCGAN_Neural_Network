@@ -183,12 +183,15 @@ class DCGAN(tf.keras.Model):
 
         # Creating two Gradient tapes one for discriminator and one for generater for finding the generator and discriminator gradients.
         with tf.GradientTape() as d_tape, tf.GradientTape() as g_tape:
-
-            Fake_images = self.generator(Noise, training=True)
-            real_image_output = self.discriminator(data, training=True)
-            fake_image_output = self.discriminator(Fake_images, training=True)
-            g_loss = self.generator_loss(fake_image_output)
-            d_loss = self.discriminator_loss(real_image_output, fake_image_output)
+            # Generating Fake images using the generator model using the random noise.
+            Fake_images = self.generator(Noise, training = True)
+            # Calculates the output of discriminator model for Real Images.
+            Real_output = self.discriminator(data, training = True)
+            # Calculates the output of discriminator model for Fake Images.
+            Fake_output = self.discriminator(Fake_images, training = True)
+            
+            g_loss = self.generator_loss(Fake_output)
+            d_loss = self.discriminator_loss(Real_output, Fake_output)
         d_grad = d_tape.gradient(d_loss, self.discriminator.trainable_variables)
         g_grad = g_tape.gradient(g_loss, self.generator.trainable_variables)
         self.d_optimizer.apply_gradients(zip(d_grad, self.discriminator.trainable_variables))
