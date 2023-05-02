@@ -153,31 +153,37 @@ class DCGAN(tf.keras.Model):
     
     # Code referred from TensorFlow documentation.
     # Generator loss function.
-    def generator_loss(self, fake_images):
-        # Creating a tensor of ones with the same shape as the fake_images.
-        fake_labels = tf.ones_like(fake_images)
+    def generator_loss(self, Fake_images):
+        # Creating a tensor of ones with the same shape as the Fake_images.
+        Fake_labels = tf.ones_like(Fake_images)
         # Finding the loss by comparing the fake labels and fake images. 
-        g_loss = self.loss_fn(fake_labels, fake_images)
-        # Returns the Generator loss of the batch of data.
-        return g_loss
+        g_loss_value = self.loss_fn(Fake_labels, Fake_images)
+        # Returns the Generator loss values of the batch of data.
+        return g_loss_value
     
     # Discriminator loss function.
-    def discriminator_loss(self, real_images, fake_images):
-        real_labels, fake_labels = tf.ones_like(real_images), tf.zeros_like(fake_images)
-        combined_output = tf.concat([real_images, fake_images], axis = 0)
-        combined_labels = tf.concat([real_labels, fake_labels], axis = 0)
-        d_loss = self.loss_fn(combined_labels, combined_output)
-        return d_loss
+    def discriminator_loss(self, Real_images, Fake_images):
+        # Creating tensors like ones and zeros with the same shape as Real_images and Fake_images respectively.
+        Real_labels, Fake_labels = tf.ones_like(Real_images), tf.zeros_like(Fake_images)
+        # Combining the real and Fake labels tensors together.
+        Combined_labels = tf.concat([Real_labels, Fake_labels], axis = 0)
+        # Combining the Real and Fake images into a batch for calculating the loss of the discriminator.
+        Combined_output = tf.concat([Real_images, Fake_images], axis = 0)
+        # Finding the discriminator loss shows how well the discriminator is able to distinguish between the real and fake images.
+        d_loss_value = self.loss_fn(Combined_labels, Combined_output)
+        # Returning the discriminator loss value of the batch of data.
+        return d_loss_value
 
+    # Training step in GAN algorithm.
     def train_step(self, data):
             
         batch_size = tf.shape(data)[0]
         noise = tf.random.uniform([batch_size, 100])
 
         with tf.GradientTape() as discriminator_tape, tf.GradientTape() as generator_tape:
-            fake_images = self.generator(noise, training=True)
+            Fake_images = self.generator(noise, training=True)
             real_image_output = self.discriminator(data, training=True)
-            fake_image_output = self.discriminator(fake_images, training=True)
+            fake_image_output = self.discriminator(Fake_images, training=True)
             g_loss = self.generator_loss(fake_image_output)
             d_loss = self.discriminator_loss(real_image_output, fake_image_output)
         d_grad = discriminator_tape.gradient(d_loss, self.discriminator.trainable_variables)
